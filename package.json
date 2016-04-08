@@ -1,0 +1,21 @@
+{
+  "name": "galaxy-generator",
+  "version": "0.0.0",
+  "description": "Generate galaxies in gif format!",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "keywords": [
+    "galaxy",
+    "gif",
+    "awesome"
+  ],
+  "author": "Greyson Richey",
+  "license": "MIT",
+  "dependencies": {
+    "canvas": "^1.3.12",
+    "gifencoder": "^1.0.6",
+    "shelljs": "^0.6.0"
+  }
+}
