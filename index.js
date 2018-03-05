@@ -1,14 +1,14 @@
-var GIFEncoder = require('gifencoder');
-var Canvas = require('canvas');
-var fs = require('fs');
+const GIFEncoder = require('gifencoder');
+const Canvas = require('canvas');
+const fs = require('fs');
 
 require('shelljs/global');
 
-var CORE_SIZE = 20;
-var GIF_LENGTH = 6000;
-var TIME_STEP = 1000 / 60;
+const CORE_SIZE = 20;
+const GIF_LENGTH = 6000;
+const TIME_STEP = 1000 / 60;
 
-var encoder = new GIFEncoder(320, 240);
+let encoder = new GIFEncoder(320, 240);
 
 encoder.createReadStream().pipe(fs.createWriteStream('galaxy.gif'));
 encoder.start();
@@ -16,33 +16,31 @@ encoder.setRepeat(0);
 encoder.setDelay(TIME_STEP);
 encoder.setQuality(100);
 
-var canvas = new Canvas(320, 240);
-var ctx = canvas.getContext('2d');
+let canvas = new Canvas(320, 240);
+let ctx = canvas.getContext('2d');
 
 ctx.fillStyle = 'white';
 ctx.strokeStyle = 'white';
 
 function Galaxy () {
-  var stars = [],
-    me = this;
+  let stars = [];
+  let me = this;
 
   me.draw = function (context) {
-    for (var i = 0; i < stars.length; i++) {
+    for (let i = 0; i < stars.length; i++) {
       stars[i].draw(context);
     }
   };
 
   me.generate = function () {
-    var startAngle = 0,
-      startDistance = 0,
-      currentAngle = 0,
-      currentDistance = 1,
-      arms = 0;
+    let arms = 2;
+    let currentAngle = 0;
+    let currentDistance = 1;
 
     //central stars first
-    for (var i = 0; i < 150; i++) {
-      startAngle = Math.random() * (Math.PI * 2);
-      startDistance = Math.random() * CORE_SIZE;
+    for (let i = 0; i < 150; i++) {
+      let startAngle = Math.random() * (Math.PI * 2);
+      let startDistance = Math.random() * CORE_SIZE;
 
       stars.push(new Star({
         startPosition: {
@@ -52,12 +50,11 @@ function Galaxy () {
       }));
     }
 
-    arms = 2;// + Math.floor(Math.random() * 3);
-    for (i = 0; i < arms; i++) {
-      currentAngle = Math.random() * (Math.PI * 2);
+    for (let i = 0; i < arms; i++) {
+      currentAngle = (2 * Math.PI / arms) * i;
 
       while (currentDistance <= 240) {
-        currentAngle += 0.1 + Math.random() * 0.4;
+        currentAngle += 0.1 + Math.random() * 0.1;
         currentDistance++;
 
         stars.push(new Star({
@@ -73,7 +70,7 @@ function Galaxy () {
   };
 
   me.update = function () {
-    for (var i = 0; i < stars.length; i++) {
+    for (let i = 0; i < stars.length; i++) {
       stars[i].update();
     }
   };
@@ -82,7 +79,7 @@ function Galaxy () {
 };
 
 function Star (config) {
-  var me = this;
+  let me = this;
 
   me.startPosition = config.startPosition;
   me.position = {
@@ -108,9 +105,9 @@ function Star (config) {
   };
 };
 
-var frames = 0,
-  maxFrames = GIF_LENGTH / TIME_STEP,
-  testGalaxy = new Galaxy();
+let frames = 0;
+let maxFrames = GIF_LENGTH / TIME_STEP;
+let testGalaxy = new Galaxy();
 
 testGalaxy.generate();
 
@@ -128,5 +125,5 @@ encoder.finish();
 console.log('Finished!');
 
 setTimeout(function () {
-  exec('eog ~/Code/galaxy-generator/galaxy.gif');
+  exec('qlmanage -p ~/Code/galaxy-generator/galaxy.gif >& /dev/null');
 }, 500);
